@@ -1,3 +1,6 @@
-print(3)
-print(4+3)
-print("Hello world")
+var pasta = 3
+var getHello := "Hello"
+
+print(-3)
+print(4+pasta)
+print(getHello() + " world")
