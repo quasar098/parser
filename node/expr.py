@@ -22,7 +22,7 @@ class Expr(Node):
             if isinstance(tokens[0], Expr):
                 return tokens[0]
             return from_token(tokens[0])
-        if is_types(tokens, LiteralIntegerExpr, TokenType.TIMES, TokenType.TIMES, LiteralIntegerExpr):
+        if is_types(tokens, TokenType.ANYTHING, TokenType.TIMES, TokenType.TIMES, TokenType.ANYTHING):
             base = Expr.from_tokens(tokens[:1])
             exponent = Expr.from_tokens(tokens[3:])
             return PowerExpr(base, exponent)
@@ -50,8 +50,20 @@ class Expr(Node):
             return SubtractExpr(left, right)
         if is_types(tokens, TokenType.LPAR):
             cache = []
-            for token in tokens[1:]:
-                if isinstance(token, Token) and token.type == TokenType.RPAR:
-                    return Expr.from_tokens(cache)
+            indent = 0
+            i = 0
+            for i, token in enumerate(tokens[1:]):
+                if isinstance(token, Token):
+                    if token.type == TokenType.LPAR:
+                        indent += 1
+                    if token.type == TokenType.RPAR:
+                        indent -= 1
+                    if indent == -1:
+                        break
                 cache.append(token)
+            rightward = tokens[i+2:]
+            # most scuffed thing in America
+            if len(rightward):
+                return Expr.from_tokens([Expr.from_tokens(cache)] + rightward)
+            return Expr.from_tokens(cache)
         raise NotImplementedError(f"not done yet: {tokens}")
