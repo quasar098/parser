@@ -3,7 +3,7 @@ from enum import Enum
 
 class TokenType(Enum):
     IF = 100
-    PRINT = 101
+    ELSE = 101
     LPAR = 102
     RPAR = 103
     LCURLY = 104
@@ -17,8 +17,9 @@ class TokenType(Enum):
     QUOTE = 112
     EQUALS = 113
     PERIOD = 114
-    VAR = 115
+    DECL = 115
     NL = 116
+    COMMA = 117
 
     VARIABLE = 1
     STRING = 2
@@ -29,7 +30,7 @@ class TokenType(Enum):
 class Lexeme:
     RESERVED = {
         "if": TokenType.IF,
-        "print": TokenType.PRINT,
+        "else": TokenType.ELSE,
         "(": TokenType.LPAR,
         ")": TokenType.RPAR,
         "{": TokenType.LCURLY,
@@ -43,8 +44,9 @@ class Lexeme:
         '"': TokenType.QUOTE,
         "=": TokenType.EQUALS,
         ".": TokenType.PERIOD,
-        "var": TokenType.VAR,
-        "\n": TokenType.NL
+        "decl": TokenType.DECL,
+        "\n": TokenType.NL,
+        ",": TokenType.COMMA
     }
 
     def __init__(self, content: str):

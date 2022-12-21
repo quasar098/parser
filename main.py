@@ -1,5 +1,6 @@
 import sys
 from lexer import Lexer
+from parser_ import Parser
 from os.path import exists
 
 
@@ -13,7 +14,8 @@ def main():
         lexer = Lexer(main_file)
         tokens = lexer.do()
 
-    print(tokens)
+    tree = Parser.do(tokens)
+    print(tree)
 
 
 if __name__ == '__main__':

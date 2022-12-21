@@ -72,7 +72,6 @@ class Lexer:
 
     def do(self):
         lexemes = self.lex()
-        print(lexemes)
         return Lexer.tokenize(lexemes)
 
     def __repr__(self):

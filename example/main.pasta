@@ -1,6 +1,2 @@
-var pasta = 3
-var getHello := "Hello"
-
-print(-3)
-print(4+pasta)
-print(getHello() + " world")
+decl hello = "Hello world"
+print(hello + "!")
