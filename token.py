@@ -21,9 +21,11 @@ class TokenType(Enum):
     NL = 116
     COMMA = 117
 
+    ANYTHING = -1
+
     VARIABLE = 1
     STRING = 2
-    NUMBER = 3
+    INTEGER = 3
     FLOAT = 4
 
 

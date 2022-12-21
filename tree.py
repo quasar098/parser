@@ -8,7 +8,7 @@ class Tree(Node):
         self.block = Block()
 
     def __repr__(self):
-        return f"<ParseTree(block={self.block})>"
+        return f"<ParseTree(\n\tblock={self.block}\n)>"
 
     def handle(self, token):
         self.block.handle(token)

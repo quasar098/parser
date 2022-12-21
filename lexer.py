@@ -64,7 +64,7 @@ class Lexer:
                 total.append(Token(Lexeme.RESERVED[lexeme.content], lexeme.content))
             else:
                 if lexeme.content[0].isnumeric():
-                    total.append(Token(TokenType.NUMBER, lexeme.content))
+                    total.append(Token(TokenType.INTEGER, lexeme.content))
                 else:
                     total.append(Token(TokenType.VARIABLE, lexeme.content))
 

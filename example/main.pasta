@@ -1,2 +1,3 @@
-decl hello = "Hello world"
+decl hello = "Hello" + " world"
 print(hello + "!")
+print(31**2)
