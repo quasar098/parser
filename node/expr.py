@@ -14,6 +14,7 @@ class Expr(Node):
         from node.invokestatement import InvokeStatement
         from utils import is_types
         from node.addexpr import AddExpr
+        from node.subtractexpr import SubtractExpr
         from node.powerexpr import PowerExpr
         from node.literalintegerexpr import LiteralIntegerExpr
 
@@ -43,6 +44,10 @@ class Expr(Node):
             left = Expr.from_tokens(tokens[:1])
             right = Expr.from_tokens(tokens[2:])
             return AddExpr(left, right)
+        if is_types(tokens, TokenType.ANYTHING, TokenType.MINUS, TokenType.ANYTHING):
+            left = Expr.from_tokens(tokens[:1])
+            right = Expr.from_tokens(tokens[2:])
+            return SubtractExpr(left, right)
         if is_types(tokens, TokenType.LPAR):
             cache = []
             for token in tokens[1:]:
