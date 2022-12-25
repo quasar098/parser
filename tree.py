@@ -1,10 +1,9 @@
 from node.block import Block
-from node.node import Node
 
 
-class Tree(Node):
-    def __init__(self, tokens=()):
-        super().__init__(tokens)
+class Tree:
+    def __init__(self):
+        super().__init__()
         self.block = Block()
 
     def __repr__(self):

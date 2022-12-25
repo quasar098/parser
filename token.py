@@ -23,7 +23,7 @@ class TokenType(Enum):
 
     ANYTHING = -1
 
-    VARIABLE = 1
+    IDENTIFIER = 1
     STRING = 2
     INTEGER = 3
     FLOAT = 4

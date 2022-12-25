@@ -1,5 +1,4 @@
 from tree import Tree
-import node.node as node
 from token import Token, TokenType
 
 

@@ -1,29 +1,21 @@
 from token import TokenType, Token
-from node.variable import Variable
-from node.literalstringexpr import LiteralStringExpr
-from node.literalintegerexpr import LiteralIntegerExpr
 
 
-def from_token(token):
-    if not isinstance(token, Token):
-        return token
-    if token.type == TokenType.VARIABLE:
-        return Variable(token.content)
-    if token.type == TokenType.STRING:
-        return LiteralStringExpr(token.content)
-    if token.type == TokenType.INTEGER:
-        return LiteralIntegerExpr(int(token.content))
-    return token
+def make_expr(tokens: list[Token]):
+    import node
+    if len(tokens) == 0:
+        raise NotImplementedError("len tokens is 0")
 
+    # string literal
+    if len(tokens) == 1 and tokens[0].type == TokenType.STRING:
+        return node.string_literal_expr.StringLiteralExpr(tokens[0].content)
 
-def is_types(stuff, *types):
-    from token import Token
-    ctypes = [(type(thing) if not isinstance(thing, Token) else thing.type) for thing in stuff]
-    for index, t in enumerate(types):
-        if len(ctypes) == index:
-            return True
-        if t == TokenType.ANYTHING:
-            continue
-        if t != ctypes[index]:
-            return False
-    return True
+    # unary minus
+    if len(tokens) == 2 and tokens[0].type == TokenType.MINUS and tokens[1].type == TokenType.INTEGER:
+        return node.unary_minus_expr.UnaryMinusExpr(make_expr(tokens[1:]))
+
+    # integer literal
+    if len(tokens) == 1 and tokens[0].type == TokenType.INTEGER:
+        return node.integer_literal_expr.IntegerLiteralExpr(int(tokens[0].content))
+
+    raise NotImplementedError(f"can't find rule: {tokens}")
