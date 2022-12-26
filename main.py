@@ -14,8 +14,9 @@ def main():
         lexer = Lexer(main_file)
         tokens = lexer.do()
 
-    tree = Parser.do(tokens)
-    print(tree)
+    parser = Parser(tokens)
+    block = parser.do()
+    print(block)
 
 
 if __name__ == '__main__':

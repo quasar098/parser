@@ -67,7 +67,6 @@ class Lexer:
                     total.append(Token(TokenType.INTEGER, lexeme.content))
                 else:
                     total.append(Token(TokenType.IDENTIFIER, lexeme.content))
-
         return total
 
     def do(self):

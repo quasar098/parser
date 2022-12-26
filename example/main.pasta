@@ -1,2 +1,2 @@
-decl hello = "Hello world"
-decl favoriteNumber = 2*(3+1)
+decl greeting = "Hello"
+decl greeting = greeting + " world!"

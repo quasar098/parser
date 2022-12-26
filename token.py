@@ -21,8 +21,6 @@ class TokenType(Enum):
     NL = 116
     COMMA = 117
 
-    ANYTHING = -1
-
     IDENTIFIER = 1
     STRING = 2
     INTEGER = 3
