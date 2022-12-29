@@ -44,28 +44,42 @@ class Parser:
             return FuncCallStatement(var, [expr])
         self.reader.mark = current
 
+    def atom(self):
+        current = self.reader.mark
+        if expr := (self.identifier_expr() or self.integer_expr() or self.string_expr()):
+            return expr
+        self.reader.mark = current
+
     def expr(self):
         current = self.reader.mark
-        if lexpr := (self.identifier_expr() or self.integer_expr() or self.string_expr()):
-            current2 = self.reader.mark
-            if expr := self.sum_expr(lexpr):
-                return expr
-            if expr := self.mul_expr(lexpr):
-                return expr
-            self.reader.mark = current2
-            return lexpr
+        if sumexpr := self.sum_expr():
+            return sumexpr
         self.reader.mark = current
 
-    def mul_expr(self, left):
+    def sum_expr(self):
+        def add_sum(left_):
+            current_ = self.reader.mark
+            if self.reader.nt(TokenType.PLUS) and (right_ := self.sum_expr()):
+                return SumExpr(left_, right_)
+            self.reader.mark = current_
+            return left_
+
         current = self.reader.mark
-        if self.reader.nt(TokenType.TIMES) and (right := self.expr()):
-            return MultiplyExpr(left, right)
+        if mulexpr := self.mul_expr():
+            return add_sum(mulexpr)
         self.reader.mark = current
 
-    def sum_expr(self, left):
+    def mul_expr(self):
+        def mul(left_):
+            current_ = self.reader.mark
+            if self.reader.nt(TokenType.TIMES) and (right_ := self.mul_expr()):
+                return MultiplyExpr(left_, right_)
+            self.reader.mark = current_
+            return left_
+
         current = self.reader.mark
-        if self.reader.nt(TokenType.PLUS) and (right := self.expr()):
-            return SumExpr(left, right)
+        if atomexpr := self.atom():
+            return mul(atomexpr)
         self.reader.mark = current
 
     def string_expr(self):
