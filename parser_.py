@@ -46,18 +46,26 @@ class Parser:
 
     def expr(self):
         current = self.reader.mark
-        if expr := (self.identifier_expr() or self.integer_expr() or self.string_expr()):
+        if lexpr := (self.identifier_expr() or self.integer_expr() or self.string_expr()):
             current2 = self.reader.mark
-            if sexpr := self.sum_expr():
-                return SumExpr(expr, sexpr)
+            if expr := self.sum_expr(lexpr):
+                return expr
+            if expr := self.mul_expr(lexpr):
+                return expr
             self.reader.mark = current2
-            return expr
+            return lexpr
         self.reader.mark = current
 
-    def sum_expr(self):
+    def mul_expr(self, left):
+        current = self.reader.mark
+        if self.reader.nt(TokenType.TIMES) and (right := self.expr()):
+            return MultiplyExpr(left, right)
+        self.reader.mark = current
+
+    def sum_expr(self, left):
         current = self.reader.mark
         if self.reader.nt(TokenType.PLUS) and (right := self.expr()):
-            return right
+            return SumExpr(left, right)
         self.reader.mark = current
 
     def string_expr(self):

@@ -1,5 +1,1 @@
-decl what = "Hello"
-decl whom = " world"
-decl emotion = "!"
-decl greeting = what + whom + 3
-
+decl pasta = 2+2*3
