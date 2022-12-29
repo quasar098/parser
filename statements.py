@@ -7,8 +7,8 @@ class DeclareStatement:
         self.variable = var
         self.expr = expr
 
-    def __repr__(self):
-        return f"<DeclareStatement(var={self.variable}, expr={self.expr})>"
+    def show(self):
+        return {"var": self.variable, "expr": self.expr}
 
 
 class FuncCallStatement:
@@ -18,5 +18,5 @@ class FuncCallStatement:
         self.variable = var
         self.args = args
 
-    def __repr__(self):
-        return f"<FuncCallStatement(var={self.variable}, args={self.args})>"
+    def show(self):
+        return {"var": self.variable, "args": self.args}

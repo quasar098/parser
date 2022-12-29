@@ -22,7 +22,6 @@ class Parser:
                 self.block.statements.append(stmt)
             if before_mark == self.reader.mark:
                 raise NotImplementedError("the mark didn't change")
-
         return self.block
 
     def declare_statement(self):
@@ -47,14 +46,18 @@ class Parser:
 
     def expr(self):
         current = self.reader.mark
-        if expr := (self.sum_expr() or self.identifier_expr() or self.integer_expr() or self.string_expr()):
+        if expr := (self.identifier_expr() or self.integer_expr() or self.string_expr()):
+            current2 = self.reader.mark
+            if sexpr := self.sum_expr():
+                return SumExpr(expr, sexpr)
+            self.reader.mark = current2
             return expr
         self.reader.mark = current
 
     def sum_expr(self):
         current = self.reader.mark
-        if (left := self.expr()) and self.reader.nt(TokenType.PLUS) and (right := self.expr()):
-            return SumExpr(left, right)
+        if self.reader.nt(TokenType.PLUS) and (right := self.expr()):
+            return right
         self.reader.mark = current
 
     def string_expr(self):

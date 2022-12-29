@@ -1,2 +1,5 @@
-decl greeting = "Hello"
-decl greeting = greeting + " world!"
+decl what = "Hello"
+decl whom = " world"
+decl emotion = "!"
+decl greeting = what + whom + 3
+
