@@ -27,7 +27,7 @@ class Parser:
     def statement(self):
         current = self.reader.mark
         if stmt := (self.declare_statement() or self.declare_lambda_statement()
-                    or self.func_call_statement() or self.if_statement()):
+                    or self.func_call_statement() or self.if_statement() or self.operator_and_equals_statement()):
             return stmt
         self.reader.mark = current
 
@@ -50,6 +50,23 @@ class Parser:
                 and (expr := self.expr()) \
                 and self.reader.nt(TokenType.NL):
             return DeclareLambdaStatement(var, expr)
+        self.reader.mark = current
+
+    def operator_and_equals_statement(self):
+        """+=, -=, *=, /="""
+        current = self.reader.mark
+        if self.reader.nt(TokenType.DECL) \
+                and (var := self.identifier_expr()) \
+                and (oper := self.reader.nt(TokenType.PLUS, TokenType.MINUS, TokenType.TIMES, TokenType.SLASH)) \
+                and self.reader.nt(TokenType.EQUALS) \
+                and (expr := self.expr()) \
+                and self.reader.nt(TokenType.NL):
+            return DeclareStatement(var, {
+                TokenType.PLUS: SumExpr,
+                TokenType.MINUS: SubExpr,
+                TokenType.TIMES: MultiplyExpr,
+                TokenType.SLASH: DivideExpr
+            }[oper.type](var, expr))
         self.reader.mark = current
 
     def get_block(self):

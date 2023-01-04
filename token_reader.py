@@ -22,11 +22,13 @@ class TokenReader:
         self.mark -= 1
         return False
 
-    def nt(self, t: TokenType):
-        """Check if the next Token has a specific TokenType"""
-        if (tk := self._next_token()).type != t:
-            return None
-        return tk
+    def nt(self, *t: TokenType):
+        """Check if the next Token is one of the specific TokenTypes"""
+        for _ in t:
+            if (tk := self._next_token()).type == _:
+                return tk
+            self.mark -= 1
+        return None
 
     def nc(self, *c: str) -> bool:
         """Check if the next Token has a specific content"""
