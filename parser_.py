@@ -97,14 +97,27 @@ class Parser:
     def sum_expr(self):
         def add_sum(left_):
             current_ = self.reader.mark
-            if self.reader.nt(TokenType.PLUS) and (right_ := self.mul_expr()):
+            if self.reader.nt(TokenType.PLUS) and (right_ := self.sub_expr()):
                 return add_sum(SumExpr(left_, right_))
             self.reader.mark = current_
             return left_
 
         current = self.reader.mark
+        if subexpr := self.sub_expr():
+            return add_sum(subexpr)
+        self.reader.mark = current
+
+    def sub_expr(self):
+        def sub(left_):
+            current_ = self.reader.mark
+            if self.reader.nt(TokenType.MINUS) and (right_ := self.mul_expr()):
+                return sub(SubExpr(left_, right_))
+            self.reader.mark = current_
+            return left_
+
+        current = self.reader.mark
         if mulexpr := self.mul_expr():
-            return add_sum(mulexpr)
+            return sub(mulexpr)
         self.reader.mark = current
 
     def mul_expr(self):

@@ -10,6 +10,15 @@ class SumExpr:
         return {"left": self.left, "right": self.right}
 
 
+class SubExpr:
+    def __init__(self, left=None, right=None):
+        self.left = left
+        self.right = right
+
+    def show(self):
+        return {"left": self.left, "right": self.right}
+
+
 class MultiplyExpr:
     def __init__(self, left=None, right=None):
         self.left = left
