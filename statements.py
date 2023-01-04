@@ -11,12 +11,27 @@ class DeclareStatement:
         return {"var": self.variable, "expr": self.expr}
 
 
-class FuncCallStatement:
-    def __init__(self, var=None, args=None):
-        if args is None:
-            args = []
+class DeclareLambdaStatement:
+    def __init__(self, var=None, expr=None):
         self.variable = var
-        self.args = args
+        self.expr = expr
 
     def show(self):
-        return {"var": self.variable, "args": self.args}
+        return {"var": self.variable, "expr": self.expr}
+
+
+class FuncCallStatement:
+    def __init__(self, expr=None):
+        self.expr = expr
+
+    def show(self):
+        return {"expr": self.expr}
+
+
+class IfStatement:
+    def __init__(self, cond=None, block=None):
+        self.condition = cond
+        self.block = block
+
+    def show(self):
+        return {"condition": self.condition, "block": self.block}

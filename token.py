@@ -20,6 +20,7 @@ class TokenType(Enum):
     DECL = 115
     NL = 116
     COMMA = 117
+    FUNC = 118
 
     IDENTIFIER = 1
     STRING = 2
@@ -46,7 +47,8 @@ class Lexeme:
         ".": TokenType.PERIOD,
         "decl": TokenType.DECL,
         "\n": TokenType.NL,
-        ",": TokenType.COMMA
+        ",": TokenType.COMMA,
+        "func": TokenType.FUNC
     }
 
     def __init__(self, content: str):

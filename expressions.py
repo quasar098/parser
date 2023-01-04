@@ -27,7 +27,26 @@ class IdentifierExpr:
         return {"name": self.name}
 
 
+class FuncCallExpr:
+    def __init__(self, var=None, args=None):
+        if args is None:
+            args = []
+        self.variable = var
+        self.args = args
+
+    def show(self):
+        return {"var": self.variable, "args": self.args}
+
+
 class IntegerExpr:
+    def __init__(self, n=None):
+        self.n: int = n
+
+    def show(self):
+        return {"num": self.n}
+
+
+class UnaryMinusExpr:
     def __init__(self, n=None):
         self.n: int = n
 

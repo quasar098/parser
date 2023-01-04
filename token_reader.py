@@ -16,6 +16,12 @@ class TokenReader:
         self.mark += 1
         return _
 
+    def try_eat(self, t):
+        if self.nt(t):
+            return True
+        self.mark -= 1
+        return False
+
     def nt(self, t: TokenType):
         """Check if the next Token has a specific TokenType"""
         if (tk := self._next_token()).type != t:
