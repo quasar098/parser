@@ -123,14 +123,27 @@ class Parser:
     def mul_expr(self):
         def mul(left_):
             current_ = self.reader.mark
-            if self.reader.nt(TokenType.TIMES) and (right_ := self.unary_minus_expr()):
+            if self.reader.nt(TokenType.TIMES) and (right_ := self.div_expr()):
                 return mul(MultiplyExpr(left_, right_))
             self.reader.mark = current_
             return left_
 
         current = self.reader.mark
+        if divexpr := self.div_expr():
+            return mul(divexpr)
+        self.reader.mark = current
+
+    def div_expr(self):
+        def div(left_):
+            current_ = self.reader.mark
+            if self.reader.nt(TokenType.SLASH) and (right_ := self.unary_minus_expr()):
+                return div(DivideExpr(left_, right_))
+            self.reader.mark = current_
+            return left_
+
+        current = self.reader.mark
         if umexpr := self.unary_minus_expr():
-            return mul(umexpr)
+            return div(umexpr)
         self.reader.mark = current
 
     def unary_minus_expr(self):

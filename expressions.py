@@ -28,6 +28,15 @@ class MultiplyExpr:
         return {"left": self.left, "right": self.right}
 
 
+class DivideExpr:
+    def __init__(self, left=None, right=None):
+        self.left = left
+        self.right = right
+
+    def show(self):
+        return {"left": self.left, "right": self.right}
+
+
 class IdentifierExpr:
     def __init__(self, name=None):
         self.name: str = name
