@@ -1,1 +1,4 @@
-decl test -= 2*20+2
+decl life = 40
+decl life += 2
+print(life)
+print(10*life)
