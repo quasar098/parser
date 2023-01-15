@@ -26,6 +26,8 @@ class TokenType(Enum):
     STRING = 2
     INTEGER = 3
     FLOAT = 4
+    FALSE = 5
+    TRUE = 6
 
 
 class Lexeme:
@@ -47,7 +49,9 @@ class Lexeme:
         ".": TokenType.PERIOD,
         "\n": TokenType.NL,
         ",": TokenType.COMMA,
-        "func": TokenType.FUNC
+        "func": TokenType.FUNC,
+        "false": TokenType.FALSE,
+        "true": TokenType.TRUE
     }
 
     def __init__(self, content: str):
@@ -61,6 +65,15 @@ class Lexeme:
         bsn = '\n'
         bsn_ = "\\n"
         return f"<Lexeme({self.content if self.content is not bsn else bsn_})>"
+
+
+class NoToken:
+    def __init__(self):
+        self.type = None
+        self.content = None
+
+    def __bool__(self):
+        return False
 
 
 class Token:

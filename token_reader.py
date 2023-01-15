@@ -1,4 +1,4 @@
-from token import Token, TokenType
+from token import Token, TokenType, NoToken
 
 
 class TokenReader:
@@ -7,12 +7,16 @@ class TokenReader:
         self.tokens = tokens
 
     def peek_token(self):
-        return None if len(self.tokens) == self.mark else self.tokens[self.mark]
+        if self.mark < 0:
+            return None
+        if len(self.tokens) <= self.mark:
+            return None
+        return self.tokens[self.mark]
 
     def _next_token(self):
-        _ = None if len(self.tokens) == self.mark else self.tokens[self.mark]
+        _ = self.peek_token()
         if _ is None:
-            return None
+            return NoToken()
         self.mark += 1
         return _
 
@@ -25,7 +29,6 @@ class TokenReader:
     def try_eat(self, t):
         if self.nt(t):
             return True
-        self.mark -= 1
         return False
 
     def nt(self, *t: TokenType):
@@ -34,7 +37,7 @@ class TokenReader:
             if (tk := self._next_token()).type == _:
                 return tk
             self.mark -= 1
-        return None
+        return NoToken()
 
     def nc(self, *c: str) -> bool:
         """Check if the next Token has a specific content"""

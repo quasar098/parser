@@ -1,3 +1,2 @@
-life = 40
-life += 2
-print(life, life+27)
+grade = 90
+good_grade = true

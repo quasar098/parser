@@ -1,8 +1,11 @@
+from expressions import TrueExpr, FalseExpr
 
 
 class Block:
-    def __init__(self):
-        self.statements = []
+    def __init__(self, stmts=None):
+        if stmts is None:
+            stmts = []
+        self.statements = stmts
 
     def show(self):
         return {"statements": self.statements}
@@ -24,6 +27,10 @@ class Block:
                 if isinstance(obj, list):
                     combo = f"{nl}{spacer*(c+1)}"
                     return f"[{combo}{f'{combo}'.join([recurs(_,c+1) for _ in obj])}{nl}{spacer*c}]"
+                if isinstance(obj, TrueExpr):
+                    return f"<True>"
+                if isinstance(obj, FalseExpr):
+                    return f"<False>"
                 s = {}
             for shown in s:
                 total += f"{spacer*(c+1)}{shown}={recurs(s[shown], c+1)}{nl}"

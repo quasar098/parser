@@ -8,35 +8,20 @@ from token import Token, TokenType
 # noinspection PyUnboundLocalVariable
 class Parser:
     def __init__(self, tokens):
-        tokens.append(Token(TokenType.NL, ""))
         self.reader = TokenReader(tokens)
-        self.block = Block()
 
     def do(self) -> Block:
-        while self.reader.peek_token() is not None:
-            before_mark = self.reader.mark
-            if self.reader.peek_token().type == TokenType.NL:
-                self.reader.nt(TokenType.NL)
-                continue
-            if stmt := self.statement():
-                self.block.statements.append(stmt)
-            if before_mark == self.reader.mark:
-                raise NotImplementedError(f"err! the mark didn't change")
-        return self.block
+        return self.block()
 
     def statement(self):
-        current = self.reader.mark
-        if stmt := (self.declare_statement() or self.declare_lambda_statement()
-                    or self.func_call_statement() or self.if_statement() or self.operator_and_equals_statement()):
+        if stmt := (self.declare_statement()):
             return stmt
-        self.reader.mark = current
 
     def declare_statement(self):
         current = self.reader.mark
         if (var := self.identifier_expr()) \
                 and self.reader.nt(TokenType.EQUALS) \
-                and (expr := self.expr()) \
-                and self.reader.nt(TokenType.NL):
+                and (expr := self.expr()):
             return DeclareStatement(var, expr)
         self.reader.mark = current
 
@@ -66,21 +51,20 @@ class Parser:
             }[oper.type](var, expr))
         self.reader.mark = current
 
-    def get_block(self):
+    def block(self):
+        stmts = []
+        self.reader.try_eat_many(TokenType.NL)
         current = self.reader.mark
-        if self.reader.nt(TokenType.LCURLY):
-            self.reader.try_eat(TokenType.NL)
-            b = Block()
-            while True:
-                current2 = self.reader.mark
-                if stmt := self.statement():
-                    b.statements.append(stmt)
-                else:
-                    self.reader.mark = current2
-                    break
-            if self.reader.nt(TokenType.RCURLY):
-                return b
+        while self.reader.peek_token() is not None and (stmt := self.statement()) \
+                and self.reader.try_eat_many(TokenType.NL):
+            current = self.reader.mark
+            stmts.append(stmt)
         self.reader.mark = current
+        if stmt := self.statement():
+            stmts.append(stmt)
+        else:
+            self.reader.mark = current
+        return Block(stmts)
 
     def func_call_statement(self):
         current = self.reader.mark
@@ -92,14 +76,27 @@ class Parser:
         current = self.reader.mark
         if self.reader.nt(TokenType.IF) and self.reader.nt(TokenType.LPAR) \
                 and (cond := self.expr()) and self.reader.nt(TokenType.RPAR) \
-                and (block := self.get_block()) and self.reader.nt(TokenType.NL):
+                and self.reader.nt(TokenType.LCURLY) \
+                and (block := self.block()) and self.reader.nt(TokenType.RCURLY):
             return IfStatement(cond, block)
         self.reader.mark = current
 
     def atom(self):
         current = self.reader.mark
-        if expr := (self.identifier_expr() or self.integer_expr() or self.string_expr()):
+        if expr := (self.identifier_expr() or self.integer_expr() or self.string_expr() or self.true_expr() or self.false_expr()):
             return expr
+        self.reader.mark = current
+
+    def true_expr(self):
+        current = self.reader.mark
+        if self.reader.nt(TokenType.TRUE):
+            return TrueExpr()
+        self.reader.mark = current
+
+    def false_expr(self):
+        current = self.reader.mark
+        if self.reader.nt(TokenType.FALSE):
+            return FalseExpr()
         self.reader.mark = current
 
     def expr(self):

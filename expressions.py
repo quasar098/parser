@@ -78,3 +78,13 @@ class StringExpr:
 
     def show(self):
         return {"content": self.content}
+
+
+class TrueExpr:
+    def __init__(self):
+        self.val = True
+
+
+class FalseExpr:
+    def __init__(self):
+        self.val = False
