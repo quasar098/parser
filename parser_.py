@@ -21,7 +21,7 @@ class Parser:
             if stmt := self.statement():
                 self.block.statements.append(stmt)
             if before_mark == self.reader.mark:
-                raise NotImplementedError("the mark didn't change")
+                raise NotImplementedError(f"err! the mark didn't change")
         return self.block
 
     def statement(self):
@@ -33,8 +33,7 @@ class Parser:
 
     def declare_statement(self):
         current = self.reader.mark
-        if self.reader.nt(TokenType.DECL) \
-                and (var := self.identifier_expr()) \
+        if (var := self.identifier_expr()) \
                 and self.reader.nt(TokenType.EQUALS) \
                 and (expr := self.expr()) \
                 and self.reader.nt(TokenType.NL):
@@ -43,8 +42,7 @@ class Parser:
 
     def declare_lambda_statement(self):
         current = self.reader.mark
-        if self.reader.nt(TokenType.FUNC) \
-                and (var := self.identifier_expr()) \
+        if (var := self.identifier_expr()) \
                 and self.reader.nt(TokenType.COLON) \
                 and self.reader.nt(TokenType.EQUALS) \
                 and (expr := self.expr()) \
@@ -55,8 +53,7 @@ class Parser:
     def operator_and_equals_statement(self):
         """+=, -=, *=, /="""
         current = self.reader.mark
-        if self.reader.nt(TokenType.DECL) \
-                and (var := self.identifier_expr()) \
+        if (var := self.identifier_expr()) \
                 and (oper := self.reader.nt(TokenType.PLUS, TokenType.MINUS, TokenType.TIMES, TokenType.SLASH)) \
                 and self.reader.nt(TokenType.EQUALS) \
                 and (expr := self.expr()) \
@@ -177,13 +174,19 @@ class Parser:
     def call_expr(self):
         def trycall(left_):
             current_ = self.reader.mark
+            exprs = []
             if self.reader.nt(TokenType.LPAR):
                 current3 = self.reader.mark
-                if (arg := self.expr()) and self.reader.nt(TokenType.RPAR):
-                    return FuncCallExpr(left_, [arg])
+                while (arg := self.expr()) and self.reader.nt(TokenType.COMMA):
+                    current3 = self.reader.mark
+                    exprs.append(arg)
                 self.reader.mark = current3
+                if arg := self.expr():
+                    exprs.append(arg)
+                else:
+                    self.reader.mark = current3
                 if self.reader.nt(TokenType.RPAR):
-                    return FuncCallExpr(left_, [])
+                    return FuncCallExpr(left_, exprs)
             self.reader.mark = current_
             return left_
 

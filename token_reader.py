@@ -16,6 +16,12 @@ class TokenReader:
         self.mark += 1
         return _
 
+    def try_eat_many(self, t):
+        times = 0
+        while self.try_eat(t):
+            times += 1
+        return times
+
     def try_eat(self, t):
         if self.nt(t):
             return True

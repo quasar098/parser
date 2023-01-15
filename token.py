@@ -17,7 +17,7 @@ class TokenType(Enum):
     QUOTE = 112
     EQUALS = 113
     PERIOD = 114
-    DECL = 115
+
     NL = 116
     COMMA = 117
     FUNC = 118
@@ -45,7 +45,6 @@ class Lexeme:
         '"': TokenType.QUOTE,
         "=": TokenType.EQUALS,
         ".": TokenType.PERIOD,
-        "decl": TokenType.DECL,
         "\n": TokenType.NL,
         ",": TokenType.COMMA,
         "func": TokenType.FUNC

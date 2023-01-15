@@ -1,4 +1,3 @@
-decl life = 40
-decl life += 2
-print(life)
-print(10*life)
+life = 40
+life += 2
+print(life, life+27)
