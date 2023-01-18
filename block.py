@@ -26,6 +26,8 @@ class Block:
                     return f"\"{obj}\""
                 if isinstance(obj, list):
                     combo = f"{nl}{spacer*(c+1)}"
+                    if not len(obj):
+                        return f"[]"
                     return f"[{combo}{f'{combo}'.join([recurs(_,c+1) for _ in obj])}{nl}{spacer*c}]"
                 if isinstance(obj, TrueExpr):
                     return f"<True>"

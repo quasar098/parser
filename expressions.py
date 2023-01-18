@@ -88,3 +88,21 @@ class TrueExpr:
 class FalseExpr:
     def __init__(self):
         self.val = False
+
+
+class ComparisonEqualsExpr:
+    def __init__(self, left=None, right=None):
+        self.left = left
+        self.right = right
+
+    def show(self):
+        return {"left": self.left, "right": self.right}
+
+
+class ComparisonOrExpr:
+    def __init__(self, left=None, right=None):
+        self.left = left
+        self.right = right
+
+    def show(self):
+        return {"left": self.left, "right": self.right}

@@ -1,8 +1,8 @@
 from block import Block
-from statements import *
 from expressions import *
+from statements import *
+from token import TokenType
 from token_reader import TokenReader
-from token import Token, TokenType
 
 
 # noinspection PyUnboundLocalVariable
@@ -14,7 +14,8 @@ class Parser:
         return self.block()
 
     def statement(self):
-        if stmt := (self.declare_statement()):
+        if stmt := (self.declare_statement() or self.declare_lambda_statement() or self.operator_and_equals_statement()
+                    or self.if_statement() or self.func_call_statement()):
             return stmt
 
     def declare_statement(self):
@@ -30,8 +31,7 @@ class Parser:
         if (var := self.identifier_expr()) \
                 and self.reader.nt(TokenType.COLON) \
                 and self.reader.nt(TokenType.EQUALS) \
-                and (expr := self.expr()) \
-                and self.reader.nt(TokenType.NL):
+                and (expr := self.expr()):
             return DeclareLambdaStatement(var, expr)
         self.reader.mark = current
 
@@ -41,8 +41,7 @@ class Parser:
         if (var := self.identifier_expr()) \
                 and (oper := self.reader.nt(TokenType.PLUS, TokenType.MINUS, TokenType.TIMES, TokenType.SLASH)) \
                 and self.reader.nt(TokenType.EQUALS) \
-                and (expr := self.expr()) \
-                and self.reader.nt(TokenType.NL):
+                and (expr := self.expr()):
             return DeclareStatement(var, {
                 TokenType.PLUS: SumExpr,
                 TokenType.MINUS: SubExpr,
@@ -68,7 +67,7 @@ class Parser:
 
     def func_call_statement(self):
         current = self.reader.mark
-        if (expr := self.call_expr()) and self.reader.nt(TokenType.NL):
+        if expr := self.call_expr():
             return FuncCallStatement(expr)
         self.reader.mark = current
 
@@ -83,7 +82,8 @@ class Parser:
 
     def atom(self):
         current = self.reader.mark
-        if expr := (self.identifier_expr() or self.integer_expr() or self.string_expr() or self.true_expr() or self.false_expr()):
+        if expr := (self.identifier_expr() or self.integer_expr() or self.string_expr()
+                    or self.true_expr() or self.false_expr()):
             return expr
         self.reader.mark = current
 
@@ -101,8 +101,34 @@ class Parser:
 
     def expr(self):
         current = self.reader.mark
-        if sumexpr := self.sum_expr():
+        if sumexpr := self.or_expr():
             return sumexpr
+        self.reader.mark = current
+
+    def or_expr(self):
+        def try_or(left_):
+            current_ = self.reader.mark
+            if self.reader.nt(TokenType.PIPE) and self.reader.nt(TokenType.PIPE) and (right_ := self.equals_expr()):
+                return try_or(ComparisonOrExpr(left_, right_))
+            self.reader.mark = current_
+            return left_
+
+        current = self.reader.mark
+        if eqexpr := self.equals_expr():
+            return try_or(eqexpr)
+        self.reader.mark = current
+
+    def equals_expr(self):
+        def try_equals(left_):
+            current_ = self.reader.mark
+            if self.reader.nt(TokenType.EQUALS) and self.reader.nt(TokenType.EQUALS) and (right_ := self.sum_expr()):
+                return try_equals(ComparisonEqualsExpr(left_, right_))
+            self.reader.mark = current_
+            return left_
+
+        current = self.reader.mark
+        if sumexpr := self.sum_expr():
+            return try_equals(sumexpr)
         self.reader.mark = current
 
     def sum_expr(self):

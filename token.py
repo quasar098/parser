@@ -17,7 +17,7 @@ class TokenType(Enum):
     QUOTE = 112
     EQUALS = 113
     PERIOD = 114
-
+    PIPE = 115
     NL = 116
     COMMA = 117
     FUNC = 118
@@ -51,7 +51,8 @@ class Lexeme:
         ",": TokenType.COMMA,
         "func": TokenType.FUNC,
         "false": TokenType.FALSE,
-        "true": TokenType.TRUE
+        "true": TokenType.TRUE,
+        "|": TokenType.PIPE
     }
 
     def __init__(self, content: str):

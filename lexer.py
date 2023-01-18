@@ -9,9 +9,13 @@ class Lexer:
     def lex(self) -> list[Lexeme]:
         total: list[Lexeme] = []
         builder = ""
+        char = None
+        last_char = None
         in_string = False
+        in_comment = False
 
         while True:
+            last_char = char
             char = self.file.read(1)
             if char == "":
                 if len(builder):
@@ -25,6 +29,17 @@ class Lexer:
                     total.append(Lexeme('"'))
                     continue
                 builder += char
+                continue
+            if in_comment:
+                if char == "\n":
+                    in_comment = False
+                else:
+                    print(char)
+                    continue
+            if last_char == "/" and char == "/":
+                total = total[:-1]
+                in_comment = True
+                builder = ""
                 continue
             if char in Lexeme.RESERVED:
                 if char == '"':
