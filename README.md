@@ -1,6 +1,16 @@
 # pasta parser
 
-parser
+right now it only does the parsing and builds a tree rather than interprets the tree and executes some stuff
+
+## features:
+- code comments with `//`
+- functions with `identifier := { ... }`
+- common math operators like `+`, `-`, `*`, `/`
+- comparison operators like `==`, `>`, `<`
+- logical operator `||`
+- boolean values `true` and `false`
+- strings with `"..."`
+- integers
 
 ## research:
 

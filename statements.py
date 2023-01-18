@@ -11,13 +11,13 @@ class DeclareStatement:
         return {"var": self.variable, "expr": self.expr}
 
 
-class DeclareLambdaStatement:
+class DeclareFunctionStatement:
     def __init__(self, var=None, expr=None):
         self.variable = var
-        self.expr = expr
+        self.block = expr
 
     def show(self):
-        return {"var": self.variable, "expr": self.expr}
+        return {"var": self.variable, "block": self.block}
 
 
 class FuncCallStatement:

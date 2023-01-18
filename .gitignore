@@ -2,3 +2,6 @@
 .vscode
 __pycache__
 node/__pycache__
+build
+dist
+*.spec

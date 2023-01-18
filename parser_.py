@@ -14,7 +14,7 @@ class Parser:
         return self.block()
 
     def statement(self):
-        if stmt := (self.declare_statement() or self.declare_lambda_statement() or self.operator_and_equals_statement()
+        if stmt := (self.declare_statement() or self.declare_function_statement() or self.operator_and_equals_statement()
                     or self.if_statement() or self.func_call_statement()):
             return stmt
 
@@ -26,13 +26,13 @@ class Parser:
             return DeclareStatement(var, expr)
         self.reader.mark = current
 
-    def declare_lambda_statement(self):
+    def declare_function_statement(self):
         current = self.reader.mark
         if (var := self.identifier_expr()) \
                 and self.reader.nt(TokenType.COLON) \
-                and self.reader.nt(TokenType.EQUALS) \
-                and (expr := self.expr()):
-            return DeclareLambdaStatement(var, expr)
+                and self.reader.nt(TokenType.EQUALS) and self.reader.nt(TokenType.LCURLY) \
+                and (block := self.block()) and self.reader.nt(TokenType.RCURLY):
+            return DeclareFunctionStatement(var, block)
         self.reader.mark = current
 
     def operator_and_equals_statement(self):
@@ -121,14 +121,31 @@ class Parser:
     def equals_expr(self):
         def try_equals(left_):
             current_ = self.reader.mark
-            if self.reader.nt(TokenType.EQUALS) and self.reader.nt(TokenType.EQUALS) and (right_ := self.sum_expr()):
+            if self.reader.nt(TokenType.EQUALS) and self.reader.nt(TokenType.EQUALS) and \
+                    (right_ := self.greater_or_less_than_expr()):
                 return try_equals(ComparisonEqualsExpr(left_, right_))
             self.reader.mark = current_
             return left_
 
         current = self.reader.mark
+        if golexpr := self.greater_or_less_than_expr():
+            return try_equals(golexpr)
+        self.reader.mark = current
+
+    def greater_or_less_than_expr(self):
+        def try_compare(left_):
+            current_ = self.reader.mark
+            if self.reader.nt(TokenType.RANGLE) and (right_ := self.sum_expr()):
+                return try_compare(ComparisonGreaterThanExpr(left_, right_))
+            self.reader.mark = current_
+            if self.reader.nt(TokenType.LANGLE) and (right_ := self.sum_expr()):
+                return try_compare(ComparisonLessThanExpr(left_, right_))
+            self.reader.mark = current_
+            return left_
+
+        current = self.reader.mark
         if sumexpr := self.sum_expr():
-            return try_equals(sumexpr)
+            return try_compare(sumexpr)
         self.reader.mark = current
 
     def sum_expr(self):

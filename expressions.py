@@ -106,3 +106,21 @@ class ComparisonOrExpr:
 
     def show(self):
         return {"left": self.left, "right": self.right}
+
+
+class ComparisonGreaterThanExpr:
+    def __init__(self, left=None, right=None):
+        self.left = left
+        self.right = right
+
+    def show(self):
+        return {"left": self.left, "right": self.right}
+
+
+class ComparisonLessThanExpr:
+    def __init__(self, left=None, right=None):
+        self.left = left
+        self.right = right
+
+    def show(self):
+        return {"left": self.left, "right": self.right}

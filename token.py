@@ -21,6 +21,8 @@ class TokenType(Enum):
     NL = 116
     COMMA = 117
     FUNC = 118
+    LANGLE = 119
+    RANGLE = 120
 
     IDENTIFIER = 1
     STRING = 2
@@ -52,7 +54,9 @@ class Lexeme:
         "func": TokenType.FUNC,
         "false": TokenType.FALSE,
         "true": TokenType.TRUE,
-        "|": TokenType.PIPE
+        "|": TokenType.PIPE,
+        ">": TokenType.RANGLE,
+        "<": TokenType.LANGLE
     }
 
     def __init__(self, content: str):

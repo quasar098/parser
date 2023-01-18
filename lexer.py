@@ -34,7 +34,6 @@ class Lexer:
                 if char == "\n":
                     in_comment = False
                 else:
-                    print(char)
                     continue
             if last_char == "/" and char == "/":
                 total = total[:-1]

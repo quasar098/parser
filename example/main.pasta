@@ -1,0 +1,27 @@
+// obviously, 0 evaluates to false, so 30 is the value of score b/c pipe operator
+score = 0 || 30
+
+// function
+increase_grade := {
+    // plus equals
+    score += 10
+    print("You boosted your score by 10!")
+}
+
+// increase score a few times
+increase_grade()
+increase_grade()
+increase_grade()
+
+// show score
+print(score)
+
+// comparison
+if (score > 90) {
+    print("Your score is very good! GG")
+}
+
+if (score < 50) {
+    // still less toxic than most chat rooms
+    print("Your score sucks! Get good n00b!")
+}
